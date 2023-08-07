@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+@model Activity
+
+    <div>
+            @await Html.PartialAsync("_Nav")
+<br>
+        <form  asp-controller="Activity" asp-action="ActCreate" class="p-3 mx-auto w-50 shadow bg-white rounded text-center" method="post" >       
+            <h1 class="display-5 mx-auto">Create an Activity!</h1>
+                <div class="form-group row mx-auto">
+                    <label asp-for="Title" class="col-sm-2 col-form-label">Title:</label>
+                        <div class="col-sm-8 p-2  mx-auto">
+                            <input asp-for="Title" class="form-control" placeholder="Title">
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                </div>
+
+                <div class="form-group row mx-auto">
+                    <label asp-for="Time" class="col-sm-2 col-form-label">Time:</label>
+                        <div class="col-sm-8 p-2 mx-auto">
+                            <input type="time" asp-for="Time" class="form-control" placeholder="Time">
+                            <span asp-validation-for="Time" class="text-danger"></span>
+                        </div>
+                </div>
+
+                <div class="form-group row  mx-auto">
+                    <label asp-for="Date" class="col-sm-2 col-form-label">Date:</label>
+                        <div class="col-sm-8  p-2  mx-auto">
+                            <input type="date" asp-for="Date" class="form-control" placeholder="Date">
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+                </div>
+
+                <div class="row  mx-auto d-flex flex-row text-center">
+                        <div >
+                    <label asp-for="DurationTime" class="col-sm-2 col-form-label">Duration:</label>
+                            <input asp-for="DurationTime" placeholder="DurationTime">
+                            <span asp-validation-for="DurationTime" class="text-danger"></span>
+                        </div>
+                        <div class="text-center">
+                            <select asp-for="DurationUnit" >
+                                <option>Minutes</option>
+                                <option>Hours</option>
+                                <option>Days</option>
+                            </select>
+                            <span asp-validation-for="DurationUnit" class="text-danger"></span>
+                        </div>
+                </div>
+
+                <div class="form-group row  p-2">
+                    <label asp-for="Description" class="col-sm-2 col-form-label">Description:</label>
+                        <div class=" mx-auto">
+                            <textarea asp-for="Description" class="form-control" placeholder="Description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="unRSVP m-4">Create Activity</button>
+                </div>
+            </form>
+            <div class="vl"></div>
+    </div>

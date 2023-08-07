@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "View Activity Page";
+}
+@* @model Activity *@
+@model MyViewModel
+
+
+<div class="text-center">
+    @await Html.PartialAsync("_Nav")
+</div>
+
+<div class="d-flex justify-content-center">
+    <div >
+        <h1 class="display-3">@Model.Association.Activity.Title</h1>
+<br>
+        <p class="wedDate"><strong>Event Coordinator:</strong> @Model.Association.Activity.Creator.FirstName</p>
+        <p class="wedDate"><strong>Description:</strong> @Model.Association.Activity.Description</p>
+        <br>
+        <p class="wedDate"><strong>Participants:</strong></p>
+
+        <div class="table table-striped w-50 shadow p-3 mb-5 bg-white rounded">
+            @foreach (Association Association in Model.Association.Activity.Associations)
+            {
+                <p>@Association.User.FirstName  @Association.User.LastName</p>
+            }
+        </div>
+<br>
+    </div>
+    
+    @{
+        bool isRSVP = @Model.Association.Activity.Associations.Any(assoc => assoc.UserId == @Context.Session.GetInt32("UserId"));
+        
+        if(@Context.Session.GetInt32("UserId") == Model.Association.Activity.Creator.UserId){
+                <td class="d-flex justify-content-center">
+                    <form asp-controller="Activity" asp-action="ActDelete" asp-route-activityId="@Model.Association.Activity.ActivityId" method="post"><button class="delete">Delete</button></form> 
+                </td>
+            } else {
+                if(isRSVP){
+                    <td><form asp-controller="Activity" asp-action="RSVPRemove" asp-route-activityId="@Model.Association.Activity.ActivityId" method="get"><button class="unRSVP">Leave</button></form></td>
+                } else {
+                    <td><form asp-controller="Activity" asp-action="RSVPAdd" asp-route-activityId="@Model.Association.Activity.ActivityId"  method="get"><button class="RSVP">Join</button></form></td>
+                }                
+            }
+    }
+                
+</div>
+

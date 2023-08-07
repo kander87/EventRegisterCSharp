@@ -1,0 +1,77 @@
+
+@{
+    ViewData["Title"] = "View Activitys";
+}
+
+@* @model List<Activity> *@
+@model MyViewModel
+
+<div class="text-center">
+    @await Html.PartialAsync("_Nav")
+
+<br>
+    <h1 class="display-6">Upcoming Activities</h1>
+    <br>
+
+<table class="table table-striped w-75 mx-auto shadow p-3 mb-5 bg-white rounded">
+    <thead class="thead-dark">
+    <tr>
+        <th>Activity</th>
+        <th>Date and Time</th>
+        <th>Duration</th>
+        <th>Event Coordinator</th>
+        <th>Number of Participants</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+    @foreach(Activity activity in Model.AllActivities)
+    {
+        @if(@activity.Date > DateTime.Now){
+        <tr>
+            <td><a href="/activity/@activity.ActivityId" style="text-decoration=none"> @activity.Title</a></td>
+            <td>@activity.Date.ToString("MM/dd") at @activity.Time?.ToString("hh:mm tt") </td>
+            <td>@activity.DurationTime @activity.DurationUnit</td>
+            <td>@activity?.Creator?.FirstName</td>
+            @{
+                bool isRSVP = activity.Associations.Any(assoc => assoc.UserId == @Context.Session.GetInt32("UserId"));
+                int CountMin1 = @activity.Associations.Count() -1;
+
+            if(@activity.Associations.Count()==0 && Context.Session.GetInt32("UserId") != activity.UserId){
+                <td>Be the first to join!</td>
+            } else if(@activity.Associations.Count()==0 && Context.Session.GetInt32("UserId") == activity.UserId){
+                <td>No one has joined yet!</td>
+            } else if(@activity.Associations.Count()==1 && Context.Session.GetInt32("UserId") != activity.UserId && isRSVP==true){
+                <td>You are the only one so far!</td>
+            }else if(@activity.Associations.Count()==1 && Context.Session.GetInt32("UserId") != activity.UserId && isRSVP==false){
+                <td>@activity?.Associations?.First().User.FirstName is the only one who has joined!</td>
+            }else if(@activity.Associations.Count()>0 && Context.Session.GetInt32("UserId") != activity.UserId && isRSVP==true){
+                <td>You and @CountMin1 others have joined!</td>
+            }else if(@activity.Associations.Count()>0 && Context.Session.GetInt32("UserId") != activity.UserId && isRSVP==false){
+                <td>@activity?.Associations?.First().User.FirstName and @CountMin1 others have joined!</td>
+            } else{
+                <td>@activity?.Associations?.First().User.FirstName and @CountMin1 others have joined!</td>
+            };
+
+            @if(@Context.Session.GetInt32("UserId") == activity.UserId){
+                <td class="d-flex justify-content-center">
+                    <form asp-controller="Activity" asp-action="ActDelete" asp-route-activityId="@activity.ActivityId" method="post"><button class="delete">Delete</button></form> 
+                </td>
+            } else {
+                if(isRSVP){
+                    <td><form asp-controller="Activity" asp-action="RSVPRemove" asp-route-activityId="@activity.ActivityId" method="get"><button class="unRSVP">Leave</button></form></td>
+                } else {
+                    <td><form asp-controller="Activity" asp-action="RSVPAdd" asp-route-activityId="@activity.ActivityId"  method="get"><button class="RSVP">Join</button></form></td>
+                }                
+            }
+            }
+        </tr>
+    }
+}
+    </tbody>
+</table>
+<a asp-controller="Activity" asp-action="NewActivity"><button class="edit" >Plan an Activity</button></a>
+
+</div>
+
